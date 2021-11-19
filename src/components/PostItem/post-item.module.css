@@ -1,25 +1,14 @@
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
 .link {
+  display: block;
   text-decoration: none;
   color: inherit;
-}
-
-.item {
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   transition: box-shadow 0.2s ease-in-out;
 }
 
-.item:hover {
+.link:hover {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 1rem;
 }
 

@@ -1,2 +1,2 @@
-export { PostList } from "./PostList";
+export { PostItem } from "./PostItem";
 export { Wrapper } from "./Wrapper";

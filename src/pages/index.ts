@@ -1,1 +1,2 @@
-export { default as SinglePost } from "./SinglePost";
+export { PostList } from "./PostList";
+export { SinglePost } from "./SinglePost";

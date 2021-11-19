@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import { SinglePost } from "src/pages";
-import { PostList } from "../components";
+
+// components
+import { PostList, SinglePost } from "pages";
 
 function PostsRouter() {
   return (
