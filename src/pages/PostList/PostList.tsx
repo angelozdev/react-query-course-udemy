@@ -5,13 +5,15 @@ import { PostItem, Wrapper } from "components";
 
 // utils
 import styles from "./post-list.module.css";
-import * as api from "api";
+import * as postsAPI from "api/posts";
 
 // types
 import type { QueryStatus } from "react-query";
 
 function PostList() {
-  const { data: posts = [], status } = useQuery("posts", api.posts.getPosts);
+  const { data: posts = [], status } = useQuery("posts", () =>
+    postsAPI.getAll()
+  );
 
   const render: Record<QueryStatus, JSX.Element> = {
     error: <p>Error loading posts</p>,

@@ -12,7 +12,7 @@ interface Props {
 function PostItem({ post }: Props) {
   return (
     <li key={post.id}>
-      <Link className={styles.link} to={`/posts/${post.id}`}>
+      <Link state={post} className={styles.link} to={`/posts/${post.id}`}>
         <h2 className={styles.item__title}>{post.title.slice(0, 20)}...</h2>
         <p>{post.body.slice(0, 50)}...</p>
       </Link>
