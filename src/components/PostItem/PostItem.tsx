@@ -5,16 +5,18 @@ import styles from "./post-item.module.css";
 
 // types
 import type { Post } from "api/resources";
-interface Props {
-  post: Post;
-}
+interface Props extends Post {}
 
-function PostItem({ post }: Props) {
+function PostItem({ body, id, title, userId }: Props) {
   return (
-    <li key={post.id}>
-      <Link state={post} className={styles.link} to={`/posts/${post.id}`}>
-        <h2 className={styles.item__title}>{post.title.slice(0, 20)}...</h2>
-        <p>{post.body.slice(0, 50)}...</p>
+    <li key={id}>
+      <Link
+        state={{ body, id, title, userId }}
+        className={styles.link}
+        to={`/posts/${id}`}
+      >
+        <h2 className={styles.item__title}>{title.slice(0, 20)}...</h2>
+        <p>{body.slice(0, 50)}...</p>
       </Link>
     </li>
   );

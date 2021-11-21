@@ -1,45 +1,57 @@
 import { Fragment } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "react-query";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 // components
 import { CommentList, Wrapper } from "components";
 
 // uitls
-import useActions from "./useActions";
+import * as postAPI from "api/posts";
+
+// types
+import type { Post } from "api/resources";
 
 function SinglePost() {
+  const { id: postId } = useParams();
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const {
-    isDeleting,
-    isLoadingPost,
-    onDeletePost,
-    post,
-    postId,
-    wasDeletedSuccessfully,
-    wasFetchedSuccessfully,
-  } = useActions();
+  const placeholderPost = (state as Post) || undefined;
 
-  if (wasDeletedSuccessfully) {
-    navigate("/posts");
-  }
+  if (typeof postId !== "string") throw new Error("[useActions] Invalid id");
+
+  const posts = useQuery(
+    ["post", { id: postId }],
+    () => postAPI.getById(postId),
+    {
+      placeholderData: placeholderPost,
+      initialData: placeholderPost,
+    }
+  );
+
+  const deletePost = useMutation(() => postAPI.deleteById(postId));
+
+  if (deletePost.isSuccess) navigate("/posts");
+
+  const { title, body, userId } = posts.data || {};
 
   return (
     <Wrapper>
-      {isLoadingPost && <div>Loading post...</div>}
-      {wasFetchedSuccessfully && (
+      {posts.isLoading && <p>Loading post...</p>}
+      {posts.isError && <p>Error loading posts.</p>}
+      {posts.isSuccess && (
         <Fragment>
           <div className="single-post__container">
-            <h1>{post?.title.toUpperCase()}</h1>
-            <Link className="badge primary" to={`/users/${post?.userId}`}>
+            <h1>{title?.toUpperCase()}</h1>
+            <Link className="badge primary" to={`/users/${userId}`}>
               user
             </Link>
-            <p>{post?.body}</p>
+            <p>{body}</p>
             <button
-              disabled={isDeleting}
-              onClick={() => onDeletePost()}
+              disabled={deletePost.isLoading}
+              onClick={() => deletePost.mutate()}
               className="button danger"
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {deletePost.isLoading ? "Deleting..." : "Delete"}
             </button>
           </div>
           <CommentList postId={postId} />

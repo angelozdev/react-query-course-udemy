@@ -14,5 +14,6 @@ export interface Comment {
 }
 
 export interface Params {
-  limit?: number;
+  limit?: number | string;
+  page?: number | string;
 }
