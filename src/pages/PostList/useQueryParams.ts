@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-type Params = { page: number; page_size: number };
+type Params = { page: number; pageSize: number };
 
 interface Options {
   defaultPage: number;
@@ -16,21 +16,30 @@ function useQueryParams({
 }: Options) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<Params>(() => {
-    const page = Number(searchParams.get("page"));
-    const pageSize = Number(searchParams.get("page_size"));
+    const pageFromSearchParams = Number(searchParams.get("page"));
+    const pageSizeFromSearchParams = Number(searchParams.get("pageSize"));
+    const { pathname } = window.location;
+
     try {
-      const { page: initialPage, page_size: initialPageSize } = JSON.parse(
-        atob(localStorage.getItem(window.location.pathname) || "{}")
-      );
+      const encodedParamsFromLocalStorage =
+        localStorage.getItem(pathname) || btoa("{}");
+      const decodedParams = atob(encodedParamsFromLocalStorage);
+      const { page: pageFromLocalStorage, pageSize: pageSizeFromLocalStorage } =
+        JSON.parse(decodedParams);
 
       return {
-        page: page || initialPage || defaultPage,
-        page_size: pageSize || initialPageSize || defaultPageSize,
+        page: pageFromSearchParams || pageFromLocalStorage || defaultPage,
+        pageSize:
+          pageSizeFromSearchParams ||
+          pageSizeFromLocalStorage ||
+          defaultPageSize,
       };
     } catch (error) {
+      console.error(error);
+      localStorage.removeItem(pathname);
       return {
-        page: page || defaultPage,
-        page_size: pageSize || defaultPageSize,
+        page: pageFromSearchParams || defaultPage,
+        pageSize: pageSizeFromSearchParams || defaultPageSize,
       };
     }
   });
@@ -50,7 +59,7 @@ function useQueryParams({
   const setPageSize = (newValue: number) => {
     setParams((prevParams) => ({
       ...prevParams,
-      page_size: newValue,
+      pageSize: newValue,
       page: 1,
     }));
   };

@@ -10,25 +10,25 @@ import useQueryParams from "./useQueryParams";
 
 function PostList() {
   const queryClient = useQueryClient();
-  const { page, page_size, onNextPage, onPreviousPage, setPageSize } =
+  const { page, pageSize, onNextPage, onPreviousPage, setPageSize } =
     useQueryParams({
       defaultPage: 1,
       defaultPageSize: 6,
-      onChangeParams: async ({ page, page_size }) => {
+      onChangeParams: async ({ page, pageSize }) => {
         const nextPage = page + 1;
         await queryClient.prefetchQuery(
-          ["posts", { page: nextPage, page_size }],
-          () => postsAPI.getAll({ page: nextPage, limit: page_size })
+          ["posts", { page: nextPage, pageSize }],
+          () => postsAPI.getAll({ page: nextPage, limit: pageSize })
         );
       },
     });
 
-  const posts = useQuery(
-    ["posts", { page, page_size }],
+  const postsQuery = useQuery(
+    ["posts", { page, pageSize }],
     () =>
       postsAPI.getAll({
         page: page,
-        limit: page_size,
+        limit: pageSize,
       }),
     { keepPreviousData: true }
   );
@@ -36,22 +36,23 @@ function PostList() {
   return (
     <Wrapper>
       <h1>
-        Posts ({posts.data?.length}){posts.isFetching && <span>*</span>}
+        Posts ({postsQuery.data?.length})
+        {postsQuery.isFetching && <span>*</span>}
       </h1>
       <label>
         Posts per page
         <input
           type="number"
-          value={page_size}
+          value={pageSize}
           className="input"
           onChange={({ target }) => setPageSize(+target.value)}
         />
       </label>
-      {posts.isLoading && <div>Loading posts...</div>}
-      {posts.isSuccess && (
+      {postsQuery.isLoading && <div>Loading posts...</div>}
+      {postsQuery.isSuccess && (
         <div>
           <ul className={styles.list}>
-            {posts.data.map(({ body, id, title, userId }) => (
+            {postsQuery.data.map(({ body, id, title, userId }) => (
               <PostItem
                 body={body}
                 id={id}
@@ -66,13 +67,15 @@ function PostList() {
             <button
               onClick={onPreviousPage}
               className="button info"
-              disabled={page <= 1 || posts.isFetching}
+              disabled={page <= 1 || postsQuery.isFetching}
             >
               Previous
             </button>
             <span>{page}</span>
             <button
-              disabled={posts.data.length < page_size || posts.isFetching}
+              disabled={
+                postsQuery.data.length < pageSize || postsQuery.isFetching
+              }
               onClick={onNextPage}
               className="button info"
             >

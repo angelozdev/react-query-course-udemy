@@ -15,11 +15,11 @@ function SinglePost() {
   const { id: postId } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const placeholderPost = (state as Post) || undefined;
+  const placeholderPost: Post = state || undefined;
 
   if (typeof postId !== "string") throw new Error("[useActions] Invalid id");
 
-  const posts = useQuery(
+  const postQuery = useQuery(
     ["post", { id: postId }],
     () => postAPI.getById(postId),
     {
@@ -28,17 +28,23 @@ function SinglePost() {
     }
   );
 
-  const deletePost = useMutation(() => postAPI.deleteById(postId));
+  const deletePostMutation = useMutation(
+    (postId: string) => {
+      if (Math.random() < 0.75) return Promise.reject("Ouch :(");
+      return postAPI.deleteById(postId);
+    },
+    { retry: 3 }
+  );
 
-  if (deletePost.isSuccess) navigate("/posts");
+  if (deletePostMutation.isSuccess) navigate("/posts");
 
-  const { title, body, userId } = posts.data || {};
+  const { title, body, userId } = postQuery.data || {};
 
   return (
     <Wrapper>
-      {posts.isLoading && <p>Loading post...</p>}
-      {posts.isError && <p>Error loading posts.</p>}
-      {posts.isSuccess && (
+      {postQuery.isLoading && <p>Loading post...</p>}
+      {postQuery.isError && <p>Error loading posts.</p>}
+      {postQuery.isSuccess && (
         <Fragment>
           <div className="single-post__container">
             <h1>{title?.toUpperCase()}</h1>
@@ -47,11 +53,13 @@ function SinglePost() {
             </Link>
             <p>{body}</p>
             <button
-              disabled={deletePost.isLoading}
-              onClick={() => deletePost.mutate()}
+              disabled={deletePostMutation.isLoading}
+              onClick={() => deletePostMutation.mutate(postId)}
               className="button danger"
             >
-              {deletePost.isLoading ? "Deleting..." : "Delete"}
+              {deletePostMutation.isLoading
+                ? "Deleting..."
+                : `Delete${deletePostMutation.isError ? " (try again)" : ""}`}
             </button>
           </div>
           <CommentList postId={postId} />
