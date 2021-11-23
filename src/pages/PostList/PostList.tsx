@@ -6,7 +6,7 @@ import { PostItem, Wrapper } from "components";
 // utils
 import styles from "./post-list.module.css";
 import * as postsAPI from "api/posts";
-import useQueryParams from "./useQueryParams";
+import { useQueryParams } from "hooks/";
 
 function PostList() {
   const queryClient = useQueryClient();

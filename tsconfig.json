@@ -17,5 +17,5 @@
     "jsx": "react-jsx",
     "baseUrl": "./src"
   },
-  "include": ["src", "resources.d.ts"]
+  "include": ["src", "src/api/resources.d.ts"]
 }
