@@ -4,7 +4,6 @@ import { useQuery, useQueryClient } from "react-query";
 import { PostItem, Wrapper } from "components";
 
 // utils
-import styles from "./post-list.module.css";
 import * as postsAPI from "api/posts";
 import { useQueryParams } from "hooks/";
 
@@ -51,7 +50,7 @@ function PostList() {
       {postsQuery.isLoading && <div>Loading posts...</div>}
       {postsQuery.isSuccess && (
         <div>
-          <ul className={styles.list}>
+          <ul className="card-list">
             {postsQuery.data.map(({ body, id, title, userId }) => (
               <PostItem
                 body={body}

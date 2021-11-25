@@ -17,3 +17,10 @@ export interface Params {
   limit?: number | string;
   page?: number | string;
 }
+
+export interface Todo {
+  id: number;
+  userId: number;
+  title: string;
+  completed: boolean;
+}
