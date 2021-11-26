@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 // components
-import { CommentList, Wrapper } from "components";
+import { CommentList, Spinner, Wrapper } from "components";
 
 // uitls
 import * as postAPI from "api/posts";
@@ -42,7 +42,7 @@ function SinglePost() {
 
   return (
     <Wrapper>
-      {postQuery.isLoading && <p>Loading post...</p>}
+      {postQuery.isLoading && <Spinner />}
       {postQuery.isError && <p>Error loading posts.</p>}
       {postQuery.isSuccess && (
         <Fragment>

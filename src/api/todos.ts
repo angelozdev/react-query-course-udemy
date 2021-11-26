@@ -12,3 +12,8 @@ export async function getAll(options?: Params): Promise<Todo[]> {
   });
   return data;
 }
+
+export async function update(id: number, todo: Partial<Todo>): Promise<Todo> {
+  const { data } = await axios.put<Todo>(`${BASE_URL}/${id}`, todo);
+  return data;
+}

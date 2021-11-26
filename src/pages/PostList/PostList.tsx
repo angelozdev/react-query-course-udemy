@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "react-query";
 
 // components
-import { PostItem, Wrapper } from "components";
+import { PostItem, Spinner, Wrapper } from "components";
 
 // utils
 import * as postsAPI from "api/posts";
@@ -47,7 +47,7 @@ function PostList() {
           onChange={({ target }) => setPageSize(+target.value)}
         />
       </label>
-      {postsQuery.isLoading && <div>Loading posts...</div>}
+      {postsQuery.isLoading && <Spinner />}
       {postsQuery.isSuccess && (
         <div>
           <ul className="card-list">
