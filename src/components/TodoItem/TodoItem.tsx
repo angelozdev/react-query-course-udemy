@@ -1,9 +1,12 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 
 // types
 import type { Todo } from "api/resources";
 interface Props extends Todo {
-  handleToggle: (todoId: Todo["id"], isCompleted: Todo["completed"]) => void;
+  handleToggle: (
+    todoId: Todo["id"],
+    isCompleted: Todo["completed"]
+  ) => Promise<void>;
   disabled?: boolean;
 }
 
@@ -32,10 +35,11 @@ function TodoItem({
           disabled={disabled}
           type="checkbox"
           checked={completed}
-          onChange={({ target }) => {
+          onChange={async ({ target }) => {
             const isCompleted = target.checked;
-            setCompleted(isCompleted);
-            handleToggle(id, isCompleted);
+            await handleToggle(id, isCompleted).then(() =>
+              setCompleted(isCompleted)
+            );
           }}
         />
         <p>{completed ? <del>{title}</del> : title}</p>
@@ -44,4 +48,4 @@ function TodoItem({
   );
 }
 
-export default memo(TodoItem);
+export default TodoItem;
