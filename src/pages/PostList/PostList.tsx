@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "react-query";
 
 // components
-import { PostItem, Spinner, Wrapper } from "components";
+import { Button, PostItem, Spinner, Wrapper } from "components";
 
 // utils
 import * as postsAPI from "api/posts";
@@ -63,23 +63,25 @@ function PostList() {
           </ul>
 
           <div className="pagination">
-            <button
+            <Button
               onClick={onPreviousPage}
-              className="button info"
+              className="info"
+              isLoading={postsQuery.isFetching}
               disabled={page <= 1 || postsQuery.isFetching}
             >
               Previous
-            </button>
+            </Button>
             <span>{page}</span>
-            <button
+            <Button
+              isLoading={postsQuery.isFetching}
               disabled={
                 postsQuery.data.length < pageSize || postsQuery.isFetching
               }
               onClick={onNextPage}
-              className="button info"
+              className="info"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       )}

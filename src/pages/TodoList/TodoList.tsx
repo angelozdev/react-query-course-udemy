@@ -1,7 +1,7 @@
-import { Spinner, TodoItem, Wrapper } from "components";
+import { Button, Spinner, TodoItem, Wrapper } from "components";
 import { useInfiniteQuery, useMutation } from "react-query";
 import * as TodoAPI from "api/todos";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Todo } from "api/resources";
 
 const MAX_PAGES_BY_REQUEST = 12;
@@ -11,12 +11,12 @@ function TodoList() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery(
       "todos",
-      ({ pageParam = page }) =>
+      ({ pageParam = 1 }) =>
         TodoAPI.getAll({ page: pageParam, limit: MAX_PAGES_BY_REQUEST }),
       {
         getNextPageParam: (lastPage) => {
           const hasNextPage = lastPage.length === MAX_PAGES_BY_REQUEST;
-          return hasNextPage ? page + 1 : false;
+          return hasNextPage ? page + 1 : undefined;
         },
       }
     );
@@ -25,6 +25,11 @@ function TodoList() {
     ({ id, todo }: { id: number; todo: Partial<Todo> }) => {
       return TodoAPI.update(id, todo);
     }
+  );
+
+  const count = useMemo(
+    () => data?.pages?.reduce((acc, cur) => acc + cur.length, 0),
+    [data?.pages]
   );
 
   const handleToggle = useCallback(
@@ -36,7 +41,7 @@ function TodoList() {
 
   return (
     <Wrapper>
-      <h1>Todos</h1>
+      <h1>Todos ({count})</h1>
       {isLoading && <Spinner />}
       <ul className="card-list">
         {data?.pages.map((page) =>
@@ -58,15 +63,16 @@ function TodoList() {
       </ul>
       {hasNextPage && (
         <div className="pagination">
-          <button
+          <Button
             disabled={isFetchingNextPage}
+            isLoading={isFetchingNextPage}
             className="button info"
             onClick={() => {
               fetchNextPage().then(() => setPage((prevPage) => prevPage + 1));
             }}
           >
-            {isFetchingNextPage ? "Loading..." : "MORE"}
-          </button>
+            MORE
+          </Button>
         </div>
       )}
     </Wrapper>

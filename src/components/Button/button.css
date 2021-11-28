@@ -1,0 +1,17 @@
+.button__loader-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.button__loader-container .lds-hourglass {
+  width: 100%;
+  height: 100%;
+}
+
+.button__loader-container .lds-hourglass:after {
+  border-width: 0.5rem;
+  margin: 0.1rem;
+  border-color: #fff transparent #fff transparent;
+}

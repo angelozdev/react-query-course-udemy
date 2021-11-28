@@ -7,6 +7,7 @@ import { CommentList, Spinner, Wrapper } from "components";
 
 // uitls
 import * as postAPI from "api/posts";
+import { Routes } from "../../constants";
 
 // types
 import type { Post } from "api/resources";
@@ -36,7 +37,7 @@ function SinglePost() {
     { retry: 3 }
   );
 
-  if (deletePostMutation.isSuccess) navigate("/posts");
+  if (deletePostMutation.isSuccess) navigate(Routes.POSTS);
 
   const { title, body, userId } = postQuery.data || {};
 
